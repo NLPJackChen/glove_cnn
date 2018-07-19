@@ -14,12 +14,12 @@ import re
 # ==================================================
 
 # Data Parameters
-tf.flags.DEFINE_string("input_text_file", "./data/train.txt", "Test text data source to evaluate.")
-tf.flags.DEFINE_string("input_label_file", "./data/label.txt", "Label file for test text data source.")
+tf.flags.DEFINE_string("input_text_file", "./data/训练样本", "Test text data source to evaluate.")
+tf.flags.DEFINE_string("input_label_file", "./data/样本标签", "Label file for test text data source.")
 
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", r"./runs/1512561447/checkpoints", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("checkpoint_dir", r"./runs/1516170582/checkpoints", "Checkpoint directory from training run")
 tf.flags.DEFINE_boolean("eval_train", True, "Evaluate on all training data")
 
 # Misc Parameters

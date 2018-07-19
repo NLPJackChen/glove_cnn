@@ -14,8 +14,8 @@ import re
 # ==================================================
 
 # Data Parameters
-tf.flags.DEFINE_string("input_text_file", "./data/train.txt", "Test text data source to evaluate.")
-tf.flags.DEFINE_string("input_label_file", "./data/label.txt", "Label file for test text data source.")
+tf.flags.DEFINE_string("input_text_file", "./data/训练样本", "Test text data source to evaluate.")
+tf.flags.DEFINE_string("input_label_file", "./data/样本标签", "Label file for test text data source.")
 
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
@@ -132,6 +132,6 @@ print (predictions_human_readable)
 out_path = os.path.join(FLAGS.checkpoint_dir, "..", "predictions2.csv")
 print("Saving evaluation to {0}".format(out_path))
 with open(out_path, 'w',newline='',encoding = 'utf-8-sig',errors=None) as f:
-    csv.writer(f).writerows(np.array([['测试个数', '正确率'],[2000 ,0.929]]))
+    csv.writer(f).writerows(np.array([['测试个数', '正确率']))
     csv.writer(f).writerows(np.array([["文件" ,"预测类别",'正确的类别(0为垃圾邮件，1为正常邮件)']]))#一定要是二维数组才能这样写入完全
     csv.writer(f).writerows(predictions_human_readable)

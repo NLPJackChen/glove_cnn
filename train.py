@@ -18,8 +18,8 @@ import re
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
 #tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity.pos", "Data source for the positive data.")
 #tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity.neg", "Data source for the negative data.")
-tf.flags.DEFINE_string("positive_data_file", "./data/goodtrain.txt", "Data source for the positive data.")
-tf.flags.DEFINE_string("negative_data_file", "./data/badtrain.txt", "Data source for the negative data.")
+tf.flags.DEFINE_string("positive_data_file", "./data/二分类某类样本", "Data source for the positive data.")
+tf.flags.DEFINE_string("negative_data_file", "./data/二分类某类样本", "Data source for the negative data.")
 tf.flags.DEFINE_integer("num_labels", 2, "Number of labels for data. (default: 2)")
 
 # Model hyperparameters
