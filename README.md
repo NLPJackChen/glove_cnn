@@ -24,7 +24,6 @@ run `python eval.py --checkpoint_dir /{PATH_TO_CODE/runs/{TIME_DIR}/checkpoints}
 ### 推荐运行环境
 python 3.x
 tensorflow 1.0.0  
-gensim 1.0.1  
-Ubuntu16.04 64bit  
+
 
 
