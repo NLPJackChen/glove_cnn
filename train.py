@@ -4,10 +4,10 @@
 import tensorflow as tf
 import numpy as np
 import os
-import time
+import time		
 import datetime
 import data_helpers
-import word2vec_helpers
+import Glove_helpers
 from text_cnn import TextCNN
 import re
 
@@ -67,7 +67,7 @@ x_text, y = data_helpers.load_positive_negative_data_files(FLAGS.positive_data_f
 # Get embedding vector
 sentences, max_document_length = data_helpers.padding_sentences(x_text, '<PADDING>')#sentences为2维数组，每一维是每一行的字, max_document_length为189
 
-x = np.array(word2vec_helpers.embedding_sentences(sentences, embedding_size = FLAGS.embedding_dim, file_to_save = os.path.join(out_dir, 'trained_word2vec.model')))
+x = np.array(Glove_helpers.embedding_sentences(sentences, embedding_size = FLAGS.embedding_dim, file_to_save = os.path.join(out_dir, 'trained_word2vec.model')))
 print("x.shape = {}".format(x.shape))
 print("y.shape = {}".format(y.shape))
 
