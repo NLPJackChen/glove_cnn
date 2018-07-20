@@ -5,7 +5,7 @@ import jieba
 import itertools
 from collections import Counter
 import os
-import word2vec_helpers
+import Glove_helpers
 import time
 import pickle
 
