@@ -25,7 +25,7 @@ def output_vocab(vocab):
 
 def embedding_sentences(sentences, embedding_size=100 ,window=5, min_count=5, file_to_load=None, file_to_save=None):
     glove_word = {}
-    with open('c.txt', 'r') as r1:
+    with open('glove_word.txt', 'r') as r1:
         for i in r1.readlines():
 
             string = re.search(r"[\u4e00-\u9fff]*", i)
