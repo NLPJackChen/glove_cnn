@@ -16,8 +16,6 @@ import re
 
 # Data loading parameters
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
-#tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity.pos", "Data source for the positive data.")
-#tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity.neg", "Data source for the negative data.")
 tf.flags.DEFINE_string("positive_data_file", "./data/二分类某类样本", "Data source for the positive data.")
 tf.flags.DEFINE_string("negative_data_file", "./data/二分类某类样本", "Data source for the negative data.")
 tf.flags.DEFINE_integer("num_labels", 2, "Number of labels for data. (default: 2)")
@@ -45,7 +43,7 @@ FLAGS = tf.flags.FLAGS
 FLAGS._parse_flags()
 print("\nParameters:")
 for attr, value in sorted(FLAGS.__flags.items()):
-    print("{}={}".format(attr.upper(), value))#upper()将小写字母全改成大写字母
+    print("{}={}".format(attr.upper(), value))
 print("")
 
 # Prepare output directory for models and summaries
@@ -63,10 +61,8 @@ if not os.path.exists(out_dir):
 # Load data
 print("Loading data...")
 x_text, y = data_helpers.load_positive_negative_data_files(FLAGS.positive_data_file, FLAGS.negative_data_file)
-#x_text,y都是列表，x_text是每一个字,y是该字对应的标签
 # Get embedding vector
-sentences, max_document_length = data_helpers.padding_sentences(x_text, '<PADDING>')#sentences为2维数组，每一维是每一行的字, max_document_length为189
-
+sentences, max_document_length = data_helpers.padding_sentences(x_text, '<PADDING>')
 x = np.array(Glove_helpers.embedding_sentences(sentences, embedding_size = FLAGS.embedding_dim, file_to_save = os.path.join(out_dir, 'trained_word2vec.model')))
 print("x.shape = {}".format(x.shape))
 print("y.shape = {}".format(y.shape))
@@ -86,7 +82,6 @@ y_shuffled = y[shuffle_indices]
 # TODO: This is very crude, should use cross-validation
 dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
 x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
-# print (x_train)也是三维的
 y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
 print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
 # print (x_train.shape[1])189
@@ -105,13 +100,11 @@ with tf.Graph().as_default():
 	    filter_sizes = list(map(int, FLAGS.filter_sizes.split(","))),
 	    num_filters = FLAGS.num_filters,
 	    l2_reg_lambda = FLAGS.l2_reg_lambda)
-
 	# Define Training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
         optimizer = tf.train.AdamOptimizer(1e-3)
         grads_and_vars = optimizer.compute_gradients(cnn.loss)
         train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
-
         # Keep track of gradient values and sparsity (optional)
         grad_summaries = []
         for g, v in grads_and_vars:
