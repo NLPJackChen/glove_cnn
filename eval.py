@@ -68,12 +68,10 @@ else:
     x_raw = ["a masterpiece four years in the making", "everything is off."]
     y_test = [1, 0]
 
-
 # Get Embedding vector x_test
 sentences, max_document_length = data_helpers.padding_sentences(x_raw, '<PADDING>', padding_sentence_length = max_document_length)
 x_test = np.array(word2vec_helpers.embedding_sentences(sentences))
 print("x_test.shape = {}".format(x_test.shape))
-
 
 # Evaluation
 # ==================================================
@@ -94,7 +92,6 @@ with graph.as_default():
         input_x = graph.get_operation_by_name("input_x").outputs[0]
         # input_y = graph.get_operation_by_name("input_y").outputs[0]
         dropout_keep_prob = graph.get_operation_by_name("dropout_keep_prob").outputs[0]
-
 
         # Tensors we want to evaluate
         predictions = graph.get_operation_by_name("predictions").outputs[0]
@@ -133,5 +130,5 @@ out_path = os.path.join(FLAGS.checkpoint_dir, "..", "predictions2.csv")
 print("Saving evaluation to {0}".format(out_path))
 with open(out_path, 'w',newline='',encoding = 'utf-8-sig',errors=None) as f:
     csv.writer(f).writerows(np.array([['测试个数', '正确率']))
-    csv.writer(f).writerows(np.array([["文件" ,"预测类别",'正确的类别(0为垃圾邮件，1为正常邮件)']]))#一定要是二维数组才能这样写入完全
+    csv.writer(f).writerows(np.array([["文件" ,"预测类别",'正确的类别(0为垃圾邮件，1为正常邮件)']]))#
     csv.writer(f).writerows(predictions_human_readable)
