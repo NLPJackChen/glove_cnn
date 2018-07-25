@@ -17,10 +17,10 @@ import json
 from gensim.models import Word2Vec
 from gensim.models.word2vec import LineSentence
 
-
 def output_vocab(vocab):
     for k, v in vocab.items():
         print(k)
+        
 def embedding_sentences(sentences, embedding_size=100 ,window=5, min_count=5, file_to_load=None, file_to_save=None):
     glove_word = {}
     with open('glove_word.txt', 'r') as r1:
@@ -51,6 +51,7 @@ def embedding_sentences(sentences, embedding_size=100 ,window=5, min_count=5, fi
                 this_vector.append(embeddingUnknown)
         all_vectors.append(this_vector)
     return all_vectors
+
 def generate_word2vec_files(input_file, output_model_file, output_vector_file, size=128, window=5, min_count=5):
     start_time = time.time()
     # trim unneeded model memory = use(much) less RAM
@@ -61,6 +62,7 @@ def generate_word2vec_files(input_file, output_model_file, output_vector_file, s
     model.wv.save_word2vec_format(output_vector_file, binary=False)
     end_time = time.time()
     print("used time : %d s" % (end_time - start_time))
+    
 def run_main():
     program = os.path.basename(sys.argv[0])
     logger = logging.getLogger(program)
@@ -72,5 +74,6 @@ def run_main():
         sys.exit(1)
     input_file, output_model_file, output_vector_file = sys.argv[1:4]
     generate_word2vec_files(input_file, output_model_file, output_vector_file)
+    
 def test():
     vectors = embedding_sentences([['first', 'sentence'], ['second', 'sentence']], embedding_size=4, min_count=1)
