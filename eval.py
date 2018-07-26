@@ -5,7 +5,7 @@ import os
 import time
 import datetime
 import data_helpers
-import word2vec_helpers
+import Glove_helpers
 from text_cnn import TextCNN
 import csv
 import re
@@ -14,7 +14,7 @@ import re
 # ==================================================
 
 # Data Parameters
-tf.flags.DEFINE_string("input_text_file", "./data/训练样本", "Test text data source to evaluate.")
+tf.flags.DEFINE_string("input_text_file", "./data/测试样本", "Test text data source to evaluate.")
 tf.flags.DEFINE_string("input_label_file", "./data/样本标签", "Label file for test text data source.")
 
 # Eval Parameters
@@ -42,12 +42,6 @@ if checkpoint_file is None:
     print("Cannot find a valid checkpoint file!")
     exit(0)
 print("Using checkpoint file : {}".format(checkpoint_file))
-
-# validate word2vec model file
-# trained_word2vec_model_file = os.path.join(FLAGS.checkpoint_dir, "..", "trained_word2vec.model")
-# if not os.path.exists(trained_word2vec_model_file):
-#     print("Word2vec model file \'{}\' doesn't exist!".format(trained_word2vec_model_file))
-# print("Using word2vec model file : {}".format(trained_word2vec_model_file))
 
 # validate training params file
 training_params_file = os.path.join(FLAGS.checkpoint_dir, "..", "training_params.pickle")
@@ -109,13 +103,8 @@ with graph.as_default():
 # Print accuracy if y_test is defined
 if y_test is not None:
     a = np.array(list(y_test))
-    print (all_predictions.shape)
-    print(12)
-    print (a.shape)
     correct_predictions = float(sum(all_predictions == a))
     print("Total number of test examples: {}".format(len(a)))
-    # print (correct_predictions )
-    # print (len(list(y_test)))
     print("Accuracy: {:g}".format(correct_predictions / float(len(a))))
 
 # Save the evaluation to a csv
@@ -124,8 +113,7 @@ with open ('./data/train.txt','r',encoding = 'utf-8') as r1:
     for i in r1.readlines():
         raw.append(re.sub(r'\n','',i))
 
-predictions_human_readable = np.column_stack((np.array([ re.sub(' *','',text) for text in raw]), all_predictions,a))#一维组合成二维
-print (predictions_human_readable)
+predictions_human_readable = np.column_stack((np.array([ re.sub(' *','',text) for text in raw]), all_predictions,a))
 out_path = os.path.join(FLAGS.checkpoint_dir, "..", "predictions2.csv")
 print("Saving evaluation to {0}".format(out_path))
 with open(out_path, 'w',newline='',encoding = 'utf-8-sig',errors=None) as f:
