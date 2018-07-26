@@ -4,26 +4,25 @@
 import tensorflow as tf
 import numpy as np
 import os
-import time		
+import time
 import datetime
 import data_helpers
 import Glove_helpers
 from text_cnn import TextCNN
-import re
 
 # Parameters
 # =======================================================
 
 # Data loading parameters
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
-tf.flags.DEFINE_string("positive_data_file", "./data/二分类某类样本", "Data source for the positive data.")
-tf.flags.DEFINE_string("negative_data_file", "./data/二分类某类样本", "Data source for the negative data.")
+tf.flags.DEFINE_string("positive_data_file", "./data/goodtrain.txt", "Data source for the positive data.")
+tf.flags.DEFINE_string("negative_data_file", "./data/badtrain.txt", "Data source for the negative data.")
 tf.flags.DEFINE_integer("num_labels", 2, "Number of labels for data. (default: 2)")
 
 # Model hyperparameters
-tf.flags.DEFINE_integer("embedding_dim", 50, "Dimensionality of character embedding (default: 128)")
+tf.flags.DEFINE_integer("embedding_dim", 100, "Dimensionality of character embedding (default: 128)")
 tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-spearated filter sizes (default: '3,4,5')")
-tf.flags.DEFINE_integer("num_filters", 100, "Number of filters per filter size (default: 128)")
+tf.flags.DEFINE_integer("num_filters", 50, "Number of filters per filter size (default: 128)")
 tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
 tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda (default: 0.0)")
 
@@ -57,10 +56,10 @@ if not os.path.exists(out_dir):
 
 # Data preprocess
 # =======================================================
-
 # Load data
 print("Loading data...")
 x_text, y = data_helpers.load_positive_negative_data_files(FLAGS.positive_data_file, FLAGS.negative_data_file)
+
 # Get embedding vector
 sentences, max_document_length = data_helpers.padding_sentences(x_text, '<PADDING>')
 x = np.array(Glove_helpers.embedding_sentences(sentences, embedding_size = FLAGS.embedding_dim, file_to_save = os.path.join(out_dir, 'trained_word2vec.model')))
@@ -76,15 +75,14 @@ data_helpers.saveDict(params, training_params_file)
 np.random.seed(10)
 shuffle_indices = np.random.permutation(np.arange(len(y)))
 x_shuffled = x[shuffle_indices]
-print (x_shuffled.shape)
 y_shuffled = y[shuffle_indices]
 # Split train/test set
 # TODO: This is very crude, should use cross-validation
 dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
 x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
+
 y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
 print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
-# print (x_train.shape[1])189
 # Training
 # =======================================================
 with tf.Graph().as_default():
@@ -100,11 +98,13 @@ with tf.Graph().as_default():
 	    filter_sizes = list(map(int, FLAGS.filter_sizes.split(","))),
 	    num_filters = FLAGS.num_filters,
 	    l2_reg_lambda = FLAGS.l2_reg_lambda)
+
 	# Define Training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
         optimizer = tf.train.AdamOptimizer(1e-3)
         grads_and_vars = optimizer.compute_gradients(cnn.loss)
         train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
+
         # Keep track of gradient values and sparsity (optional)
         grad_summaries = []
         for g, v in grads_and_vars:
@@ -158,7 +158,7 @@ with tf.Graph().as_default():
             print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
             train_summary_writer.add_summary(summaries, step)
 
-        def dev_step(x_batch, y_batch, writer=None):
+        def dev_step(x_batch, y_n    , writer=None):
             """
             Evaluates model on a dev set
             """
@@ -168,7 +168,7 @@ with tf.Graph().as_default():
               cnn.dropout_keep_prob: 1.0
             }
             step, summaries, loss, accuracy = sess.run(
-                [global_step, dev_summary_op, cnn.loss, cnn.accuracy],
+                [global_step, dev_summary_op, cnn.loss,  cnn.accuracy],
                 feed_dict)
             time_str = datetime.datetime.now().isoformat()
             print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
