@@ -52,7 +52,6 @@ def embedding_sentences(sentences, embedding_size=100 ,window=5, min_count=5, fi
         all_vectors.append(this_vector)
     return all_vectors
 
-
 def run_main():
     program = os.path.basename(sys.argv[0])
     logger = logging.getLogger(program)
