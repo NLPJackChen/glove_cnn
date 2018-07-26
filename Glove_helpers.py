@@ -14,8 +14,6 @@ import time
 import re
 import json
 
-from gensim.models import Word2Vec
-from gensim.models.word2vec import LineSentence
 
 def output_vocab(vocab):
     for k, v in vocab.items():
@@ -54,14 +52,6 @@ def embedding_sentences(sentences, embedding_size=100 ,window=5, min_count=5, fi
         all_vectors.append(this_vector)
     return all_vectors
 
-def generate_word2vec_files(input_file, output_model_file, output_vector_file, size=128, window=5, min_count=5):
-    start_time = time.time()
-    model = Word2Vec(LineSentence(input_file), size=size, window=window, min_count=min_count,
-                     workers=multiprocessing.cpu_count())
-    model.save(output_model_file)
-    model.wv.save_word2vec_format(output_vector_file, binary=False)
-    end_time = time.time()
-    print("used time : %d s" % (end_time - start_time))
 
 def run_main():
     program = os.path.basename(sys.argv[0])
@@ -75,7 +65,6 @@ def run_main():
         print (globals()['__doc__'] % locals())
         sys.exit(1)
     input_file, output_model_file, output_vector_file = sys.argv[1:4]
-    generate_word2vec_files(input_file, output_model_file, output_vector_file)
 
 def test():
     vectors = embedding_sentences([['first', 'sentence'], ['second', 'sentence']], embedding_size=4, min_count=1)
